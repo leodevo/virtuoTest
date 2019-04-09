@@ -12,6 +12,18 @@ const {
 
 beforeEach(populateStations)
 
+describe('GET /stations', () => {
+  it('should get all stations', (done) => {
+    request(app)
+      .get('/stations')
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.stations.length).toBe(2)
+      })
+      .end(done)
+  })
+})
+
 describe('POST /stations', () => {
   it('should create a station', (done) => {
     let name = 'stationTest'
@@ -35,7 +47,7 @@ describe('POST /stations', () => {
         Station.find().then((stations) => {
           expect(stations.length).toBe(3)
         })
-        
+
         Station.findOne({ name }).then((station) => {
           expect(station).toBeTruthy()
           expect(station.name).toBe(name)

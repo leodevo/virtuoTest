@@ -29,10 +29,13 @@ app.post('/stations', (req, res) => {
   })
 })
 
-app.get('/', (req, res) => {
-  console.log('req.body : ', req.body)
-  console.log('yo')
-  res.send({})
+app.get('/stations', (req, res) => {
+  Station.find()
+    .then((stations) => {
+      res.send({ stations })
+    }, (e) => {
+      res.status(400).send(e)
+    })
 })
 
 app.listen(port, () => {

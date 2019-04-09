@@ -6,6 +6,7 @@ const { Car } = require('./car')
 const stationSchema = Schema({
   name: {
     type: String,
+    unique: true,
     required: true,
     minlength: 1,
     maxlength: 50,

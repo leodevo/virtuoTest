@@ -60,6 +60,26 @@ app.get('/stations/:id', (req, res) => {
   })
 })
 
+app.delete('/stations/:id', (req, res) => {
+  let id = req.params.id
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send()
+  }
+
+  Station.findOneAndDelete({
+    _id: id
+  }).then((station) => {
+    if (!station) {
+      return res.status(404).send()
+    }
+
+    return res.send({ station })
+  }).catch((e) => {
+    return res.status(400).send()
+  })
+})
+
 app.listen(port, () => {
   console.log(`Started up at port ${port}`)
 })

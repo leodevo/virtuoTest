@@ -35,10 +35,6 @@ describe('GET /stations/:id', () => {
       })
       .end(done)
   })
-  console.log('heyheyehey')
-  console.log()
-
-  //console.log(`stations[0] : `, stations[0])
 
   it('should return 404 if station not found', (done) => {
     let aHexId = new ObjectID().toHexString()
@@ -51,6 +47,45 @@ describe('GET /stations/:id', () => {
   it('should return 404 for non-object ids station not found', (done) => {
     request(app)
       .get('/stations/123')
+      .expect(404)
+      .end(done)
+  })
+})
+
+describe('DELETE /stations/:id', () => {
+  it('should remove a station', (done) => {
+    let hexId = stations[1]._id
+
+    request(app)
+      .delete(`/stations/${hexId}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.station._id).toBe(hexId)
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err)
+        }
+
+        Station.findById(hexId).then((station) => {
+          expect(station).toBeFalsy()
+          done()
+        }).catch((e) => done(e))
+      })
+  })
+
+  it('should return 404 if station not found', (done) => {
+    let aHexId = new ObjectID().toHexString()
+    request(app)
+      .delete(`/stations/${aHexId}`)
+      .expect(404)
+      .end(done)
+  })
+
+  it('should return 404 if object id is invalid', (done) => {
+    let aHexId = 'aInvalidId'
+    request(app)
+      .delete(`/stations/${aHexId}`)
       .expect(404)
       .end(done)
   })

@@ -31,12 +31,41 @@ describe('POST /stations', () => {
           console.log(err.message)
           return done(err)
         }
-        // TODO add unique name for Station
+
+        Station.find().then((stations) => {
+          expect(stations.length).toBe(3)
+        })
+        
         Station.findOne({ name }).then((station) => {
           expect(station).toBeTruthy()
           expect(station.name).toBe(name)
           expect(Array.isArray(station.cars)).toBeTruthy()
           expect(station.cars.length).toBe(0)
+          done()
+        }).catch((e) => {
+          done(e)
+        })
+      })
+  })
+
+  it('should NOT create a station with an already taken name', (done) => {
+    let alreadyUsedName = 'stationOne'
+
+    request(app)
+      .post('/stations')
+      .send({ alreadyUsedName })
+      .expect(400)
+      .expect((res) => {
+        expect(res.body.alreadyUsedName).toBeFalsy()
+      })
+      .end((err) => {
+        if (err) {
+          console.log(err.message)
+          return done(err)
+        }
+
+        Station.find().then((stations) => {
+          expect(stations.length).toBe(2)
           done()
         }).catch((e) => {
           done(e)

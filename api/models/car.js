@@ -4,6 +4,7 @@ const Schema = mongoose.Schema
 const carSchema = Schema({
   name: {
     type: String,
+    unique: true,
     required: true,
     minlength: 1,
     maxlength: 50,

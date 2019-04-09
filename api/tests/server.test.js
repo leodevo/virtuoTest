@@ -1,5 +1,6 @@
 const expect = require('expect')
 const request = require('supertest')
+const { ObjectID } = require('mongodb')
 
 const { app } = require('./../server')
 
@@ -20,6 +21,37 @@ describe('GET /stations', () => {
       .expect((res) => {
         expect(res.body.stations.length).toBe(2)
       })
+      .end(done)
+  })
+})
+
+describe('GET /stations/:id', () => {
+  it('should return station document', (done) => {
+    request(app)
+      .get(`/stations/${stations[0]._id}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.station.name).toBe(stations[0].name)
+      })
+      .end(done)
+  })
+  console.log('heyheyehey')
+  console.log()
+
+  //console.log(`stations[0] : `, stations[0])
+
+  it('should return 404 if station not found', (done) => {
+    let aHexId = new ObjectID().toHexString()
+    request(app)
+      .get(`/stations/${aHexId}`)
+      .expect(404)
+      .end(done)
+  })
+
+  it('should return 404 for non-object ids station not found', (done) => {
+    request(app)
+      .get('/stations/123')
+      .expect(404)
       .end(done)
   })
 })

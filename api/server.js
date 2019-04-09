@@ -80,6 +80,32 @@ app.delete('/stations/:id', (req, res) => {
   })
 })
 
+app.patch('/stations/:id', (req, res) => {
+  let id = req.params.id
+  var body = _.pick(req.body, ['name'])
+
+  console.log(id)
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send()
+  }
+
+  Station.findOneAndUpdate(
+    {
+      _id: id
+    }, { $set: body }, { new: true }).then((station) => {
+      console.log(station)
+    if (!station) {
+      return res.status(404).send()
+    }
+
+    res.send({ station })
+  }).catch((e) => {
+    console.log(e)
+    res.status(400).send()
+  })
+})
+
 app.listen(port, () => {
   console.log(`Started up at port ${port}`)
 })

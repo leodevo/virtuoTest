@@ -152,3 +152,28 @@ describe('POST /stations', () => {
       })
   })
 })
+
+describe('PATCH /stations/:id', () => {
+  it('should update the station', (done) => {
+    let name = 'This should be the new name'
+
+    request(app)
+      .patch(`/stations/${stations[0]._id}`)
+      .send({
+        name
+      })
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.station.name).toBe(name)
+      })
+      .end(done)
+  })
+
+  it('should return 404 if station not found', (done) => {
+    let aHexId = new ObjectID()
+    request(app)
+      .patch(`/stations/${aHexId}`)
+      .expect(404)
+      .end(done)
+  })
+})
